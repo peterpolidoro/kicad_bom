@@ -19,11 +19,9 @@ License:
 
 ##Installation
 
+[Setup Python](https://github.com/janelia-pypi/python_setup)
+
 ###Linux and Mac OS X
-
-[Setup Python for Linux](./PYTHON_SETUP_LINUX.md)
-
-[Setup Python for Mac OS X](./PYTHON_SETUP_MAC_OS_X.md)
 
 ```shell
 mkdir -p ~/virtualenvs/kicad
@@ -33,8 +31,6 @@ pip install kicad_bom
 ```
 
 ###Windows
-
-[Setup Python for Windows](./PYTHON_SETUP_WINDOWS.md)
 
 ```shell
 virtualenv C:\virtualenvs\kicad
