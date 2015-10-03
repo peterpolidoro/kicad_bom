@@ -59,7 +59,7 @@ def generate_boms():
     columnset = compfields | partfields     # union
 
     # prepend an initial 'hard coded' list and put the enchillada into list 'columns'
-    columns = ['Item','Reference(s)','Value','Quantity'] + sorted(list(columnset))
+    columns = ['Item','Reference(s)','Value','Footprint','Quantity'] + sorted(list(columnset))
 
     # Create a new csv writer object to use as the output formatter
     out = csv.writer(f,quotechar='\"',quoting=csv.QUOTE_MINIMAL )
@@ -96,11 +96,12 @@ def generate_boms():
             c = component
 
         # Fill in the component groups common data
-        # columns = ['Item','Reference(s)','Value','Quantity'] + sorted(list(columnset))
+        # columns = ['Item','Reference(s)','Value','Footprint','Quantity'] + sorted(list(columnset))
         item += 1
         row.append(item)
         row.append(refs);
         row.append(c.getValue())
+        row.append(c.getFootprint())
         row.append(len(group))
 
         # from column 4 upwards, use the fieldnames to grab the data
