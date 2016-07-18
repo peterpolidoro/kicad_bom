@@ -147,7 +147,12 @@ def generate_boms():
             del row[:]
             try:
                 if vendor == net.getGroupField(group,'Vendor'):
-                    row.append(len(group))
+                    part_count = 1
+                    try:
+                        part_count = int(net.getGroupField(group,'PartCount'))
+                    except ValueError:
+                        pass
+                    row.append(part_count*len(group))
                     row.append(net.getGroupField(group,'PartNumber'))
             except:
                 pass
