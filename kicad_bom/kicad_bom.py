@@ -2,7 +2,7 @@
 # Python script to generate BOM in multiple formats from a KiCad generic netlist.
 #
 
-from __future__ import print_function
+from __future__ import print_function,division
 
 import kicad_netlist_reader
 import sys
@@ -51,10 +51,10 @@ def generate_boms():
     # f.write('\n')
 
     compfields = net.gatherComponentFieldUnion(components)
+    compfields -= set(['PartCount'])
     partfields = net.gatherLibPartFieldUnion()
-
     # remove Reference, Value, Datasheet, and Footprint, they will come from 'columns' below
-    partfields -= set(['Reference','Value','Datasheet','Footprint'])
+    partfields -= set(['Reference','Value','Datasheet','Footprint','PartCount'])
 
     columnset = compfields | partfields     # union
 
@@ -101,7 +101,12 @@ def generate_boms():
         row.append(item)
         row.append(refs);
         row.append(c.getValue())
-        row.append(len(group))
+        part_count = 1
+        try:
+            part_count = int(net.getGroupField(group,'PartCount'))
+        except ValueError:
+            pass
+        row.append(part_count*len(group))
 
         # from column 4 upwards, use the fieldnames to grab the data
         for field in columns[4:]:
