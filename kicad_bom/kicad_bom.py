@@ -68,7 +68,11 @@ def generate_boms():
     def writerow(acsvwriter,columns):
         utf8row = []
         for col in columns:
-            utf8row.append(str(col).encode('utf8'))
+            try:
+                utf8row.append(str(col).encode('utf8'))
+            except UnicodeEncodeError:
+                print("Unable to encode:")
+                print(col)
         acsvwriter.writerow(utf8row)
 
     # Get all of the components in groups of matching parts + values
