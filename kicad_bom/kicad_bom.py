@@ -9,15 +9,25 @@ import sys
 import csv
 import os
 import shutil
+from diskwalk2 import DiskWalk
+
 # import PyOrgMode
 # use PyOrgMode someday, but not developed enough at the moment.
 
 def generate_boms():
-    if len(sys.argv) != 2:
-        print("Usage ", __file__, "<netlist.xml>", file=sys.stderr)
-        sys.exit(1)
-
-    input_path = sys.argv[1]
+    input_path = None
+    if len(sys.argv) == 2:
+        input_path = sys.argv[1]
+    else:
+        dw = DiskWalk(os.getcwd())
+        items = dw.enumerate_paths()
+        for item in items:
+            (root,ext) = os.path.splitext(item)
+            ext = ext.lower()
+            if ext == '.xml':
+                input_path = item
+                break
+    print("Processing: {0}".format(input_path))
 
     # Generate an instance of a generic netlist, and load the netlist tree from
     # the command line option. If the file doesn't exist, execution will stop
@@ -30,6 +40,7 @@ def generate_boms():
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         output_path = os.path.join(output_dir,'bom_pcb.csv')
+        print('Creating: {0}'.format(output_path))
         # if os.path.exists(output_path):
         #     shutil.copyfile(output_path,output_path+'.bck')
         f = open(output_path, 'w')
@@ -138,6 +149,7 @@ def generate_boms():
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
             filename = str(vendor) + '_order_pcb.csv'
+            print('Creating: {0}'.format(filename))
             output_path = os.path.join(output_dir,filename)
             f = open(output_path, 'w')
             # Create a new csv writer object to use as the output formatter
