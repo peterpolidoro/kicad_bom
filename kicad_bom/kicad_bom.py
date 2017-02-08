@@ -160,7 +160,6 @@ def generate_boms():
             f = sys.stdout
 
         for group in grouped:
-            del row[:]
             try:
                 if vendor == net.getGroupField(group,'Vendor'):
                     part_count = 1
@@ -168,12 +167,13 @@ def generate_boms():
                         part_count = int(net.getGroupField(group,'PartCount'))
                     except ValueError:
                         pass
+                    del row[:]
                     row.append(part_count*len(group))
                     row.append(net.getGroupField(group,'PartNumber'))
+                    writerow(out,row)
             except:
                 pass
 
-            writerow(out,row)
 
         f.close()
 
