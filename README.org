@@ -1,0 +1,47 @@
+#+TITLE: kicad_bom
+#+AUTHOR: Peter Polidoro
+#+EMAIL: peterpolidoro@gmail.com
+
+* Package Information
+  - Author :: Peter Polidoro
+  - License :: BSD
+
+  KiCad Python module for generating bill of materials in multiple
+  formats. Based on some code by Jean-Pierre Charras.
+
+* Installation
+
+  [[https://github.com/janelia-pypi/python_setup][Setup Python]]
+
+** Linux and Mac OS X
+
+   #+BEGIN_SRC sh
+mkdir -p ~/virtualenvs/kicad
+virtualenv ~/virtualenvs/kicad
+source ~/virtualenvs/kicad/bin/activate
+pip install kicad_bom
+   #+END_SRC
+
+** Windows
+
+   #+BEGIN_SRC sh
+virtualenv C:\virtualenvs\kicad
+C:\virtualenvs\kicad\Scripts\activate
+pip install kicad_bom
+   #+END_SRC
+
+* Command Line Use
+
+** Linux and Mac OS X
+
+   #+BEGIN_SRC sh
+source ~/virtualenvs/kicad/bin/activate
+kicad_bom <netlist.xml>
+   #+END_SRC
+
+** Windows
+
+   #+BEGIN_SRC sh
+C:\virtualenvs\kicad\Scripts\activate
+kicad_bom <netlist.xml>
+   #+END_SRC
