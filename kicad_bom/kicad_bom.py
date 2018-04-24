@@ -43,7 +43,7 @@ def generate_boms():
         print('Creating: {0}'.format(output_path))
         # if os.path.exists(output_path):
         #     shutil.copyfile(output_path,output_path+'.bck')
-        f = open(output_path, 'w')
+        f = open(output_path,'w',newline='\n')
     except IOError:
         e = "Can't open output file for writing: " + output_path
         print(__file__,":",e,sys.stderr)
@@ -116,7 +116,7 @@ def generate_boms():
         for field in columns[4:]:
             row.append( net.getGroupField(group, field) );
 
-        writerow(out,row)
+        out.writerow(row)
 
     f.close()
 
@@ -140,7 +140,7 @@ def generate_boms():
             filename = str(vendor) + '_order_pcb.csv'
             print('Creating: {0}'.format(filename))
             output_path = os.path.join(output_dir,filename)
-            f = open(output_path, 'w')
+            f = open(output_path,'w',newline='\n')
             # Create a new csv writer object to use as the output formatter
             out = csv.writer(f,quotechar='\"',quoting=csv.QUOTE_MINIMAL )
         except IOError:
@@ -159,7 +159,7 @@ def generate_boms():
                     del row[:]
                     row.append(part_count*len(group))
                     row.append(net.getGroupField(group,'PartNumber'))
-                    writerow(out,row)
+                    out.writerow(row)
             except:
                 pass
 
