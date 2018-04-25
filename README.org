@@ -9,6 +9,22 @@
   KiCad Python module for generating bill of materials in multiple
   formats. Based on some code by Jean-Pierre Charras.
 
+* Example Use
+** Linux and Mac OS X
+
+   #+BEGIN_SRC sh
+     source ~/venvs/kicad/bin/activate
+     cd <kicad_project_directory>
+     kicad_bom
+   #+END_SRC
+
+** Windows
+
+   #+BEGIN_SRC sh
+     C:\venvs\kicad\Scripts\activate
+     cd <kicad_project_directory>
+     kicad_bom
+   #+END_SRC
 * Installation
 
   [[https://github.com/janelia-pypi/python_setup][Setup Python]]
@@ -16,32 +32,16 @@
 ** Linux and Mac OS X
 
    #+BEGIN_SRC sh
-mkdir -p ~/virtualenvs/kicad
-virtualenv ~/virtualenvs/kicad
-source ~/virtualenvs/kicad/bin/activate
-pip install kicad_bom
+     mkdir ~/venvs/
+     python3 -m venv ~/venvs/kicad
+     source ~/venvs/kicad/bin/activate
+     pip install kicad_bom
    #+END_SRC
 
 ** Windows
 
    #+BEGIN_SRC sh
-virtualenv C:\virtualenvs\kicad
-C:\virtualenvs\kicad\Scripts\activate
-pip install kicad_bom
-   #+END_SRC
-
-* Command Line Use
-
-** Linux and Mac OS X
-
-   #+BEGIN_SRC sh
-source ~/virtualenvs/kicad/bin/activate
-kicad_bom <netlist.xml>
-   #+END_SRC
-
-** Windows
-
-   #+BEGIN_SRC sh
-C:\virtualenvs\kicad\Scripts\activate
-kicad_bom <netlist.xml>
+     python3 -m venv C:\venvs\kicad
+     C:\venvs\kicad\Scripts\activate
+     pip install kicad_bom
    #+END_SRC
