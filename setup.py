@@ -88,7 +88,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'kicad_bom=kicad_bom:save_boms_to_files',
+            'kicad_bom=kicad_bom:save_all_csv_files',
         ],
     },
 )

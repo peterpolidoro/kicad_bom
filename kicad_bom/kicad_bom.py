@@ -59,11 +59,14 @@ class KicadBom:
         # (see kicad_netlist_reader.py)
         self._grouped_components = self._netlist.groupComponents(components)
 
-    def get_bom_from_netlist(self,netlist_path=None):
+    def _update_netlist(self,netlist_path=None):
         if (self._netlist_path is None) or (netlist_path is not None):
             self._read_netlist(netlist_path)
-            if self._netlist_path is None:
-                return []
+
+    def get_bom_from_netlist(self,netlist_path=None):
+        self._update_netlist(netlist_path)
+        if self._netlist_path is None:
+            return []
 
         # Create header row
         row = []
@@ -107,11 +110,10 @@ class KicadBom:
 
         return bom
 
-    def get_vendor_orders_from_netlist(self,netlist_path=None):
-        if (self._netlist_path is None) or (netlist_path is not None):
-            self._read_netlist(netlist_path)
-            if self._netlist_path is None:
-                return []
+    def get_vendors_parts_from_netlist(self,netlist_path=None):
+        self._update_netlist(netlist_path)
+        if self._netlist_path is None:
+            return {}
 
         # Create vendor set
         vendor_set = set()
@@ -122,9 +124,9 @@ class KicadBom:
             except:
                 pass
 
-        vendor_orders = {}
+        vendors_parts = {}
         for vendor in vendor_set:
-            order = []
+            vendor_parts = []
             for group in self._grouped_components:
                 try:
                     if vendor == self._netlist.getGroupField(group,'Vendor'):
@@ -136,45 +138,57 @@ class KicadBom:
                         row = []
                         row.append(part_count*len(group))
                         row.append(self._netlist.getGroupField(group,'PartNumber'))
-                        order.append(row)
+                        vendor_parts.append(row)
                 except ValueError:
                     pass
-            vendor_orders[vendor] = order
-        return vendor_orders
+            vendors_parts[vendor] = vendor_parts
+        return vendors_parts
 
-    def save_boms_to_files(self,netlist_path=None):
-        if (self._netlist_path is None) or (netlist_path is not None):
-            self._read_netlist(netlist_path)
-            if self._netlist_path is None:
-                return []
+    def save_bom_csv_file(self,netlist_path=None):
+        self._update_netlist(netlist_path)
+        if self._netlist_path is None:
+            return
 
         output_dir = os.path.join(os.path.dirname(self._netlist_path),'bom')
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
         bom = self.get_bom_from_netlist()
-        bom_filename = 'bom_pcb.csv'
+        bom_filename = 'bom.csv'
         bom_output_path = os.path.join(output_dir,bom_filename)
         with open(bom_output_path,'w') as f:
             bom_writer = csv.writer(f,quotechar='\"',quoting=csv.QUOTE_MINIMAL)
             for row in bom:
                bom_writer.writerow(row)
 
-        vendor_orders = self.get_vendor_orders_from_netlist()
-        for vendor in vendor_orders:
-            vendor_order_filename = str(vendor) + '_order_pcb.csv'
-            vendor_order_output_path = os.path.join(output_dir,vendor_order_filename)
-            with open(vendor_order_output_path,'w') as f:
-                vendor_order_writer = csv.writer(f,quotechar='\"',quoting=csv.QUOTE_MINIMAL)
-                vendor_order = vendor_orders[vendor]
-                for row in vendor_order:
-                   vendor_order_writer.writerow(row)
+    def save_vendor_parts_csv_files(self,netlist_path=None):
+        self._update_netlist(netlist_path)
+        if self._netlist_path is None:
+            return
+
+        output_dir = os.path.join(os.path.dirname(self._netlist_path),'bom')
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        vendors_parts = self.get_vendors_parts_from_netlist()
+        for vendor in vendors_parts:
+            vendor_parts_filename = str(vendor) + '_parts.csv'
+            vendor_parts_output_path = os.path.join(output_dir,vendor_parts_filename)
+            with open(vendor_parts_output_path,'w') as f:
+                vendor_parts_writer = csv.writer(f,quotechar='\"',quoting=csv.QUOTE_MINIMAL)
+                vendor_parts = vendors_parts[vendor]
+                for row in vendor_parts:
+                   vendor_parts_writer.writerow(row)
+
+    def save_all_csv_files(self,netlist_path=None):
+        self.save_bom_csv_file(netlist_path)
+        self.save_vendor_parts_csv_files(netlist_path)
 
 
-def save_boms_to_files():
+def save_all_csv_files():
     kb = KicadBom()
-    kb.save_boms_to_files()
+    kb.save_all_csv_files()
 
 # -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
-    save_boms_to_files()
+    save_all_csv_files()
