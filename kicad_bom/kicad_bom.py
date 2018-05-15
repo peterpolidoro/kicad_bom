@@ -52,8 +52,8 @@ class KicadBom:
 
         columnset = compfields | partfields     # union
 
-        # prepend an initial 'hard coded' list and put the enchillada into list 'columns'
-        self._column_names = ['Item','Reference(s)','Value','Quantity'] + sorted(list(columnset))
+        # prepend an initial 'hard coded' list and put the rest into list 'columns'
+        self._column_names = ['Item','Reference(s)','Quantity'] + sorted(list(columnset))
 
         # Get all of the components in groups of matching parts + values
         # (see kicad_netlist_reader.py)
