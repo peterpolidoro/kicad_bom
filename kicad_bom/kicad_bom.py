@@ -47,13 +47,18 @@ class KicadBom:
         compfields = self._netlist.gatherComponentFieldUnion(components)
         compfields -= set(['PartCount'])
         partfields = self._netlist.gatherLibPartFieldUnion()
-        # remove Reference, Value, Datasheet, and Footprint, they will come from 'columns' below
         partfields -= set(['Reference','Value','Datasheet','Footprint','PartCount'])
 
-        columnset = compfields | partfields     # union
+        additional_columns = compfields | partfields     # union
 
-        # prepend an initial 'hard coded' list and put the rest into list 'columns'
-        self._column_names = ['Item','Reference(s)','Quantity'] + sorted(list(columnset))
+        self._column_names = ['Item','Reference(s)','Quantity']
+        self._base_column_length = len(self._column_names)
+        if 'PartNumber' in additional_columns:
+            self._column_names.append('PartNumber')
+        if 'Vendor' in additional_columns:
+            self._column_names.append('Vendor')
+        if 'Description' in additional_columns:
+            self._column_names.append('Description')
 
         # Get all of the components in groups of matching parts + values
         # (see kicad_netlist_reader.py)
@@ -91,11 +96,9 @@ class KicadBom:
                 c = component
 
             # Fill in the component groups common data
-            # self._column_names = ['Item','Reference(s)','Value','Quantity'] + sorted(list(columnset))
             item += 1
             row.append(item)
             row.append(refs);
-            row.append(c.getValue())
             part_count = 1
             try:
                 part_count = int(self._netlist.getGroupField(group,'PartCount'))
@@ -103,9 +106,8 @@ class KicadBom:
                 pass
             row.append(part_count*len(group))
 
-            # from column 4 upwards, use the fieldnames to grab the data
-            for field in self._column_names[4:]:
-                row.append( self._netlist.getGroupField(group, field) );
+            for field in self._column_names[self._base_column_length:]:
+                row.append(self._netlist.getGroupField(group, field));
             bom.append(row)
 
         return bom
