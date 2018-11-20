@@ -31,7 +31,7 @@
    #+END_SRC
 * Installation
 
-  [[https://github.com/janelia-pypi/python_setup][Setup Python]]
+  [[https://github.com/janelia-pypi/python_setup]]
 
 ** Linux and Mac OS X
 
