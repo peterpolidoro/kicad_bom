@@ -3,8 +3,12 @@
 #+EMAIL: peterpolidoro@gmail.com
 
 * Package Information
-  - Author :: Peter Polidoro
+  - Name :: kicad_bom
+  - Version :: 2.2.0
   - License :: BSD
+  - URL :: https://github.com/janelia-pypi/kicad_bom
+  - Author :: Peter Polidoro
+  - Email :: peterpolidoro@gmail.com
 
   KiCad Python module for generating bill of materials in multiple
   formats. Based on some code by Jean-Pierre Charras.
