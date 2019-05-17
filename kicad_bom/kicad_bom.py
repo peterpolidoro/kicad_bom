@@ -45,20 +45,25 @@ class KicadBom:
         components = self._netlist.getInterestingComponents()
 
         compfields = self._netlist.gatherComponentFieldUnion(components)
-        compfields -= set(['PartCount'])
         partfields = self._netlist.gatherLibPartFieldUnion()
-        partfields -= set(['Reference','Value','Datasheet','Footprint','PartCount'])
+        partfields -= set(['Reference','Value','Datasheet','Footprint'])
 
         additional_columns = compfields | partfields     # union
 
         self._column_names = ['Item','Reference(s)','Quantity']
         self._base_column_length = len(self._column_names)
-        if 'PartNumber' in additional_columns:
-            self._column_names.append('PartNumber')
+        if 'Manufacturer' in additional_columns:
+            self._column_names.append('Manufacturer')
+        if 'Manufacturer Part Number' in additional_columns:
+            self._column_names.append('Manufacturer Part Number')
         if 'Vendor' in additional_columns:
             self._column_names.append('Vendor')
+        if 'Vendor Part Number' in additional_columns:
+            self._column_names.append('Vendor Part Number')
         if 'Description' in additional_columns:
             self._column_names.append('Description')
+        if 'Package' in additional_columns:
+            self._column_names.append('Package')
 
         # Get all of the components in groups of matching parts + values
         # (see kicad_netlist_reader.py)
@@ -99,16 +104,18 @@ class KicadBom:
             item += 1
             row.append(item)
             row.append(refs);
-            part_count = 1
-            try:
-                part_count = int(self._netlist.getGroupField(group,'PartCount'))
-            except ValueError:
-                pass
-            row.append(part_count*len(group))
+            row.append(len(group))
 
+            include_row = False
             for field in self._column_names[self._base_column_length:]:
-                row.append(self._netlist.getGroupField(group, field));
-            bom.append(row)
+                value = self._netlist.getGroupField(group, field)
+                if (field == 'Manufacturer Part Number') and value:
+                    include_row = True
+                if (field == 'Vendor Part Number') and value:
+                    include_row = True
+                row.append(value)
+            if include_row:
+                bom.append(row)
 
         return bom
 
@@ -122,7 +129,8 @@ class KicadBom:
         for group in self._grouped_components:
             try:
                 vendor = self._netlist.getGroupField(group,'Vendor')
-                vendor_set |= set([vendor])
+                if vendor:
+                    vendor_set |= set([vendor])
             except:
                 pass
 
@@ -132,14 +140,9 @@ class KicadBom:
             for group in self._grouped_components:
                 try:
                     if vendor == self._netlist.getGroupField(group,'Vendor'):
-                        part_count = 1
-                        try:
-                            part_count = int(self._netlist.getGroupField(group,'PartCount'))
-                        except ValueError:
-                            pass
                         row = []
-                        row.append(part_count*len(group))
-                        row.append(self._netlist.getGroupField(group,'PartNumber'))
+                        row.append(len(group))
+                        row.append(self._netlist.getGroupField(group,'Vendor Part Number'))
                         vendor_parts.append(row)
                 except ValueError:
                     pass
