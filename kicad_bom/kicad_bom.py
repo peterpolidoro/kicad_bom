@@ -109,9 +109,7 @@ class KicadBom:
             include_row = False
             for field in self._column_names[self._base_column_length:]:
                 value = self._netlist.getGroupField(group, field)
-                if (field == 'Manufacturer Part Number') and value:
-                    include_row = True
-                if (field == 'Vendor Part Number') and value:
+                if ('Part Number' in field) and value:
                     include_row = True
                 row.append(value)
             if include_row:
