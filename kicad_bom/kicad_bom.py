@@ -92,6 +92,15 @@ class KicadBom:
             row = []
             refs = ""
 
+            group_with_part_number = False
+            for field in self._column_names[self._base_column_length:]:
+                value = self._netlist.getGroupField(group, field)
+                if ('Part Number' in field) and value:
+                    group_with_part_number = True
+
+            if not group_with_part_number:
+                continue
+
             # Add the reference of every component in the group and keep a reference
             # to the component so that the other data can be filled in once per group
             for component in group:
@@ -106,14 +115,11 @@ class KicadBom:
             row.append(refs);
             row.append(len(group))
 
-            include_row = False
             for field in self._column_names[self._base_column_length:]:
                 value = self._netlist.getGroupField(group, field)
-                if ('Part Number' in field) and value:
-                    include_row = True
                 row.append(value)
-            if include_row:
-                bom.append(row)
+
+            bom.append(row)
 
         return bom
 
