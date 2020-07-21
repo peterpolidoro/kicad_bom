@@ -113,7 +113,7 @@ class KicadBom:
             item += 1
             row.append(item)
             row.append(refs);
-            row.append(len(group))
+            row.append(self._get_quantity_from_group(group))
 
             for field in self._column_names[self._base_column_length:]:
                 value = self._netlist.getGroupField(group, field)
@@ -122,6 +122,18 @@ class KicadBom:
             bom.append(row)
 
         return bom
+
+    def _get_quantity_from_group(self,group):
+        count = len(group)
+        try:
+            quantity = int(self._netlist.getGroupField(group,'Quantity'))
+        except ValueError:
+            quantity = 1
+        quantity *= count
+        print('quantity =', quantity)
+        return quantity
+
+
 
     def get_vendors_parts_from_netlist(self,netlist_path=None):
         self._update_netlist(netlist_path)
@@ -145,7 +157,7 @@ class KicadBom:
                 try:
                     if vendor == self._netlist.getGroupField(group,'Vendor'):
                         row = []
-                        row.append(len(group))
+                        row.append(self._get_quantity_from_group(group))
                         row.append(self._netlist.getGroupField(group,'Vendor Part Number'))
                         vendor_parts.append(row)
                 except ValueError:
