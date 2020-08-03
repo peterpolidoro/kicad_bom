@@ -82,7 +82,9 @@ class KicadBom:
         # (see kicad_netlist_reader.py)
         self._grouped_components = self._netlist.groupComponents(components)
 
-    def _get_bom(self):
+    def get_bom_from_netlist(self,netlist_path=None):
+        self._update_netlist(netlist_path)
+
         # Create header row
         row = []
         for c in self._column_names:
@@ -205,7 +207,7 @@ class KicadBom:
             return row
 
     def _save_bom_csv_file(self):
-        bom = self._get_bom()
+        bom = self.get_bom_from_netlist()
         bom_filename = 'bom.csv'
         bom_output_path = os.path.join(self._output_dir,bom_filename)
         with open(bom_output_path,'w') as f:
