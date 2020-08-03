@@ -82,35 +82,6 @@ class KicadBom:
         # (see kicad_netlist_reader.py)
         self._grouped_components = self._netlist.groupComponents(components)
 
-    def get_bom_from_netlist(self,netlist_path=None):
-        self._update_netlist(netlist_path)
-
-        # Create header row
-        row = []
-        for c in self._column_names:
-            row.append(c)
-
-        # Create bom
-        bom = []
-        bom.append(row)
-
-        parts_by_manufacturer_part_number = self._get_parts_by_manufacturer_part_number()
-
-        item = 0
-        row_of_parts_without_number = None
-        for part_number, part_info in parts_by_manufacturer_part_number.items():
-            if part_number is not self._no_part_number:
-                item += 1
-            row = self._get_bom_row_from_part(item,part_number,part_info)
-            if part_number is not self._no_part_number:
-                bom.append(row)
-            else:
-                row_of_parts_without_number = row
-        if row_of_parts_without_number:
-            bom.append(row_of_parts_without_number)
-
-        return bom
-
     def _get_bom_row_from_part(self,item,part_number,part_info):
             ref_string = self._refs_to_string(part_info['refs'])
             quantity = part_info['quantity']
@@ -168,7 +139,7 @@ class KicadBom:
         quantity *= count
         return quantity
 
-    def get_parts_by_vendor(self):
+    def _get_parts_by_vendor(self):
         # Create vendor set
         vendor_set = set()
         for group in self._grouped_components:
@@ -206,8 +177,35 @@ class KicadBom:
             row.append(part_info['quantity'])
             return row
 
-    def _save_bom_csv_file(self):
-        bom = self.get_bom_from_netlist()
+    def get_bom(self):
+        # Create header row
+        row = []
+        for c in self._column_names:
+            row.append(c)
+
+        # Create bom
+        bom = []
+        bom.append(row)
+
+        parts_by_manufacturer_part_number = self._get_parts_by_manufacturer_part_number()
+
+        item = 0
+        row_of_parts_without_number = None
+        for part_number, part_info in parts_by_manufacturer_part_number.items():
+            if part_number is not self._no_part_number:
+                item += 1
+            row = self._get_bom_row_from_part(item,part_number,part_info)
+            if part_number is not self._no_part_number:
+                bom.append(row)
+            else:
+                row_of_parts_without_number = row
+        if row_of_parts_without_number:
+            bom.append(row_of_parts_without_number)
+
+        return bom
+
+    def save_bom_csv_file(self):
+        bom = self.get_bom()
         bom_filename = 'bom.csv'
         bom_output_path = os.path.join(self._output_dir,bom_filename)
         with open(bom_output_path,'w') as f:
@@ -215,8 +213,8 @@ class KicadBom:
             for row in bom:
                bom_writer.writerow(row)
 
-    def _save_vendor_parts_csv_files(self):
-        parts_by_vendor = self.get_parts_by_vendor()
+    def save_vendor_parts_csv_files(self):
+        parts_by_vendor = self._get_parts_by_vendor()
         for vendor in parts_by_vendor:
             vendor_parts_filename = str(vendor) + '_parts.csv'
             vendor_parts_output_path = os.path.join(self._output_dir,vendor_parts_filename)
@@ -228,8 +226,8 @@ class KicadBom:
                     vendor_parts_writer.writerow(row)
 
     def save_all_csv_files(self):
-        self._save_bom_csv_file()
-        self._save_vendor_parts_csv_files()
+        self.save_bom_csv_file()
+        self.save_vendor_parts_csv_files()
 
 
 def save_all_csv_files():
