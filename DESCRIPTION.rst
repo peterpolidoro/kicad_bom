@@ -6,12 +6,12 @@ formats.
 
 Authors:
 
-    Peter Polidoro <peterpolidoro@gmail.com>
+    Peter Polidoro <peter@polidoro.io>
     Jean-Pierre Charras jean-pierre.charras[at]gipsa-lab-dot-inpg-dot-fr
 
 Package Maintainers:
 
-    Peter Polidoro <peterpolidoro@gmail.com>
+    Peter Polidoro <peter@polidoro.io>
 
 License:
 
