@@ -3,11 +3,12 @@
 #
 import kicad_netlist_reader
 import os
+from pathlib import Path
 import csv
 
 
 class KicadBom:
-    def __init__(self,netlist_path=None):
+    def __init__(self, netlist_path=None, output_path=None):
         self._netlist_ext = '.xml'
         self._netlist_path = None
         self._netlist = None

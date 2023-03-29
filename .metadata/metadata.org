@@ -55,8 +55,14 @@ python-click
 bom
 #+END_SRC
 
+#+NAME: python-package-exports
+#+BEGIN_SRC text :exports none :noweb yes
+KicadBom, save_all_csv_files
+#+END_SRC
+
 #+NAME: references
 #+BEGIN_SRC text :exports none :noweb yes
+https://gitlab.com/kicad/code/kicad
 #+END_SRC
 
 #+NAME: creation-date
@@ -156,6 +162,7 @@ Python 3
 #+BEGIN_SRC markdown :noweb yes
 - Python Package Name: <<python-package-name>>
 - Description: <<description>>
+- Python Package Exports: <<python-package-exports>>
 - Version: <<version>>
 - Python Version: <<python-version>>
 - Release Date: <<release-date>>
@@ -176,29 +183,6 @@ Python 3
 ** Python
 
 #+BEGIN_SRC python
-from loadstar_sensors_interface import LoadstarSensorsInterface
-import asyncio
-
-async def my_sensor_value_callback(sensor_value):
-    print(f'sensor value magnitude: {sensor_value.magnitude}, units: {sensor_value.units}')
-    await asyncio.sleep(0)
-
-async def example():
-    dev = LoadstarSensorsInterface()
-    await dev.open_high_speed_serial_connection(port='/dev/ttyUSB0')
-    dev.set_sensor_value_units('gram')
-    dev.set_units_format('.1f')
-    await dev.tare()
-    dev.start_getting_sensor_values(my_sensor_value_callback)
-    await asyncio.sleep(5)
-    await dev.stop_getting_sensor_values()
-    count = dev.get_sensor_value_count()
-    duration = dev.get_sensor_value_duration()
-    rate = dev.get_sensor_value_rate()
-    print(f'{count} sensor values in {duration} at a rate of {rate}')
-    await dev.print_device_info()
-
-asyncio.run(example())
 #+END_SRC
 
 ** Command Line
@@ -206,72 +190,11 @@ asyncio.run(example())
 *** help
 
 #+BEGIN_SRC sh :noweb yes
-<<command-line-interface>> --help
-# Usage: <<command-line-interface>> [OPTIONS]
-
-#   Command line interface for loadstar sensors.
-
-# Options:
-#   -p, --port TEXT          Device name (e.g. /dev/ttyUSB0 on GNU/Linux or COM3
-#                            on Windows)
-#   -H, --high-speed         Open serial port with high speed baudrate.
-#   --debug                  Print debugging information.
-#   -i, --info               Print the device info and exit
-#   -T, --tare               Tare before getting sensor values.
-#   -d, --duration INTEGER   Duration of sensor value measurements in seconds.
-#                            [default: 10]
-#   -u, --units TEXT         Sensor value units.  [default: gram]
-#   -f, --units-format TEXT  Units format.  [default: .1f]
-#   -h, --help               Show this message and exit.
-#+END_SRC
-
-#+RESULTS:
-
-*** device info
-
-#+BEGIN_SRC sh :noweb yes
-# DI-100, DI-1000
-<<command-line-interface>> --port /dev/ttyUSB0 --info
-
-# DI-1000UHS
-<<command-line-interface>> --port /dev/ttyUSB0 --high-speed --info
-# device info:
-# port                     /dev/ttyUSB0
-# baudrate                 230400
-# model                    FCM DI-1000
-# id                       F230235995
-# sensor_value_units       gram
-# units_format             .1f
-# load_capacity            2041.2 gram
 #+END_SRC
 
 *** example usage
 
 #+BEGIN_SRC sh :noweb yes
-# DI-100, DI-1000
-<<command-line-interface>> --port /dev/ttyUSB0 --tare --duration 10 --units kilogram --units-format=.3f
-
-# DI-1000UHS
-<<command-line-interface>> --port /dev/ttyUSB0 --high-speed --tare --duration 10 --units kilogram --units-format=.3f
-# 2023-02-03 18:35:11.086982 - sensor_value -> 0.500 kilogram
-# 2023-02-03 18:35:11.087548 - sensor_value -> 0.500 kilogram
-# 2023-02-03 18:35:11.088130 - sensor_value -> 0.500 kilogram
-# 2023-02-03 18:35:11.088705 - sensor_value -> 0.500 kilogram
-# 2023-02-03 18:35:11.089174 - sensor_value -> 0.500 kilogram
-# 2023-02-03 18:35:11.089540 - sensor_value -> 0.500 kilogram
-# 2023-02-03 18:35:11.089905 - sensor_value -> 0.500 kilogram
-# 2023-02-03 18:35:11.090268 - sensor_value -> 0.500 kilogram
-# 2023-02-03 18:35:11.090634 - sensor_value -> 0.500 kilogram
-# 2023-02-03 18:35:11.091001 - sensor_value -> 0.500 kilogram
-# 5166 sensor values in 10.051 second at a rate of 513.980 hertz
-# device info:
-# port                     /dev/ttyUSB0
-# baudrate                 230400
-# model                    FCM DI-1000
-# id                       F230235995
-# sensor_value_units       kilogram
-# units_format             .3f
-# load_capacity            2.041 kilogram
 #+END_SRC
 
 * Installation
@@ -279,52 +202,6 @@ asyncio.run(example())
 [[https://github.com/janelia-pypi/python_setup]]
 
 ** GNU/Linux
-
-*** Drivers
-
-GNU/Linux computers usually have all of the necessary drivers already installed,
-but users need the appropriate permissions to open the device and communicate
-with it.
-
-Udev is the GNU/Linux subsystem that detects when things are plugged into your
-computer.
-
-Udev may be used to detect when a loadstar sensor is plugged into the computer
-and automatically give permission to open that device.
-
-If you plug a sensor into your computer and attempt to open it and get an error
-such as: "FATAL: cannot open /dev/ttyUSB0: Permission denied", then you need to
-install udev rules to give permission to open that device.
-
-Udev rules may be downloaded as a file and placed in the appropriate directory
-using these instructions:
-
-[[https://docs.platformio.org/en/stable/core/installation/udev-rules.html][99-platformio-udev.rules]]
-
-**** Download rules into the correct directory
-
-#+BEGIN_SRC sh :noweb yes
-curl -fsSL https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules | sudo tee /etc/udev/rules.d/99-platformio-udev.rules
-#+END_SRC
-
-**** Restart udev management tool
-
-#+BEGIN_SRC sh :noweb yes
-sudo service udev restart
-#+END_SRC
-
-**** Ubuntu/Debian users may need to add own “username” to the “dialout” group
-
-#+BEGIN_SRC sh :noweb yes
-sudo usermod -a -G dialout $USER
-sudo usermod -a -G plugdev $USER
-#+END_SRC
-
-**** After setting up rules and groups
-
-You will need to log out and log back in again (or reboot) for the user group changes to take effect.
-
-After this file is installed, physically unplug and reconnect your board.
 
 *** Python Code
 
@@ -349,12 +226,6 @@ guix install <<guix-name>>
 #+END_SRC
 
 ** Windows
-
-*** Drivers
-
-Download and install Windows driver:
-
-[[https://www.loadstarsensors.com/drivers-for-usb-load-cells-and-load-cell-interfaces.html][Loadstar Sensors Windows Driver]]
 
 *** Python Code
 
@@ -423,49 +294,6 @@ exit
 make -f .metadata/Makefile upload
 #+END_SRC
 
-*** Test direct device interaction using serial terminal
-
-**** Low Speed
-
-DI-100, DI-1000
-
-#+BEGIN_SRC sh :noweb yes
-make -f .metadata/Makefile guix-dev-container-port-serial # PORT=/dev/ttyUSB0
-# make -f .metadata/Makefile PORT=/dev/ttyUSB1 guix-dev-container-port-serial
-? # help
-settings
-[C-a][C-x] # to exit
-#+END_SRC
-
-**** High Speed
-
-DI-1000UHS
-
-#+BEGIN_SRC sh :noweb yes
-make -f .metadata/Makefile guix-dev-container-port-serial-hs # PORT=/dev/ttyUSB0
-# make -f .metadata/Makefile PORT=/dev/ttyUSB1 guix-dev-container-port-serial-hs
-? # help
-settings
-[C-a][C-x] # to exit
-#+END_SRC
-
-*** Test Python package using ipython shell with serial port access
-
-#+BEGIN_SRC sh :noweb yes
-make -f .metadata/Makefile guix-dev-container-port-ipython # PORT=/dev/ttyUSB0
-# make -f .metadata/Makefile PORT=/dev/ttyUSB1 guix-dev-container-port-ipython
-import <<python-package-name>>
-exit
-#+END_SRC
-
-*** Test Python package installation with serial port access
-
-#+BEGIN_SRC sh :noweb yes
-make -f .metadata/Makefile guix-container-port # PORT=/dev/ttyUSB0
-# make -f .metadata/Makefile PORT=/dev/ttyUSB1 guix-container-port
-exit
-#+END_SRC
-
 ** Docker
 
 *** Install Docker Engine
@@ -494,24 +322,6 @@ make -f .metadata/Makefile docker-container
 exit
 #+END_SRC
 
-*** Test Python package using ipython shell with serial port access
-
-#+BEGIN_SRC sh :noweb yes
-make -f .metadata/Makefile docker-dev-container-port-ipython # PORT=/dev/ttyUSB0
-# make -f .metadata/Makefile PORT=/dev/ttyUSB1 docker-dev-container-port-ipython
-import <<python-package-name>>
-exit
-#+END_SRC
-
-*** Test Python package installation with serial port access
-
-#+BEGIN_SRC sh :noweb yes
-make -f .metadata/Makefile docker-container-port # PORT=/dev/ttyUSB0
-# make -f .metadata/Makefile PORT=/dev/ttyUSB1 docker-container-port
-exit
-#+END_SRC
-
-
 * Tangled Files                                                    :noexport:
 
 #+BEGIN_SRC scheme :tangle guix/channels.scm :exports none :noweb yes
@@ -522,12 +332,18 @@ exit
         (url "https://git.savannah.gnu.org/git/guix.git")
         (branch "master")
         (commit
-          "1750d68309e26293c2da5aad953a061867f2cb14")
+          "cd31437e9c00102f2dd5fab99286d4e77b6beb09")
         (introduction
           (make-channel-introduction
             "9edb3f66fd807b096b48283debdcddccfea34bad"
             (openpgp-fingerprint
-              "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA")))))
+              "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
+      (channel
+        (name 'guix-janelia)
+        (url "https://github.com/guix-janelia/guix-janelia.git")
+        (branch "main")
+        (commit
+          "a8a165560ee168fb21eb9af61f7b3e1735102401")))
 #+END_SRC
 
 #+BEGIN_SRC scheme :tangle guix/guix.scm :exports none :noweb yes
@@ -546,7 +362,8 @@ exit
  (gnu packages python-xyz)
  (gnu packages imagemagick)
  (gnu packages version-control)
- (gnu packages ncurses))
+ (gnu packages ncurses)
+ (guix-janelia packages python-janelia))
 
 (define %source-dir (dirname (dirname (dirname (current-filename)))))
 
@@ -566,6 +383,7 @@ exit
                          python-wheel
                          python-twine
                          python-ipython
+                         python-setuptools
                          imagemagick))
     (propagated-inputs (list
                         ncurses
@@ -610,12 +428,6 @@ RUN pip install --user .
 CMD ["bash"]
 #+END_SRC
 
-#+BEGIN_SRC text :tangle .alias :exports none :noweb yes
-# This file is generated automatically from metadata.org
-# File edits may be overwritten!
-alias ,make=make\ -f\ .metadata/Makefile
-#+END_SRC
-
 #+BEGIN_SRC text :tangle Makefile :exports none :noweb yes
 # This file is generated automatically from metadata
 # File edits may be overwritten!
@@ -631,7 +443,8 @@ GUIX-DEV-SHELL = $(GUIX-TIME-MACHINE) -- shell -D -f $(MAKEFILE_DIR)/guix/guix.s
 CONTAINER = --container --preserve='^DISPLAY$$' --preserve='^TERM$$'
 GUIX-CONTAINER = $(GUIX-SHELL) $(CONTAINER)
 GUIX-DEV-CONTAINER = $(GUIX-DEV-SHELL) $(CONTAINER)
-VENV-SHELL = rm -rf .venv; mkdir .venv; python3 -m venv .venv; source .venv/bin/activate
+GUIX-DEV-CONTAINER-NETWORK = $(GUIX-DEV-SHELL) $(CONTAINER) --network
+VENV-SHELL = rm -rf .venv && mkdir .venv && python -m venv .venv && source .venv/bin/activate
 DOCKER-DEV-IMAGE = docker build -f $(MAKEFILE_DIR)/docker/Dockerfile.dev -t <<python-package-name>>-dev .
 DOCKER-DEV-CONTAINER = $(DOCKER-DEV-IMAGE); docker run -it <<python-package-name>>-dev
 DOCKER-IMAGE = $(DOCKER-DEV-IMAGE); docker build -f $(MAKEFILE_DIR)/docker/Dockerfile -t <<python-package-name>> .
@@ -640,6 +453,10 @@ DOCKER-CONTAINER = $(DOCKER-IMAGE); docker run -it <<python-package-name>>
 .PHONY: guix-dev-container
 guix-dev-container:
 	$(GUIX-DEV-CONTAINER)
+
+.PHONY: guix-dev-container-network
+guix-dev-container-network:
+	$(GUIX-DEV-CONTAINER-NETWORK)
 
 .PHONY: guix-dev-container-ipython
 guix-dev-container-ipython:
@@ -651,11 +468,7 @@ guix-container:
 
 .PHONY: requirements.txt
 requirements.txt:
-	$(GUIX-DEV-CONTAINER) -- $(VENV-SHELL);\
-	pip install .;\
-	pip freeze --local --exclude <<python-package-name>> > requirements.txt;\
-	deactivate;\
-	rm -rf .venv
+	$(GUIX-DEV-CONTAINER-NETWORK) -- sh -c "$(VENV-SHELL) && pip install --trusted-host pypi.org . && pip freeze --local --exclude <<python-package-name>> > requirements.txt && deactivate && rm -rf .venv"
 
 .PHONY: docker-dev-container
 docker-dev-container:
@@ -674,7 +487,7 @@ metadata-edits:
 	$(GUIX-DEV-CONTAINER) -- sh -c "emacs -q --no-site-file --no-site-lisp --no-splash -l $(MAKEFILE_DIR)/emacs/init.el --file $(MAKEFILE_DIR)/metadata.org"
 
 .PHONY: metadata
-metadata: requirements.txt
+metadata:
 	$(GUIX-DEV-CONTAINER) -- sh -c "emacs --batch -Q  -l $(MAKEFILE_DIR)/emacs/init.el --eval '(process-org \"$(MAKEFILE_DIR)/metadata.org\")'"
 
 .PHONY: package
@@ -692,36 +505,6 @@ add:
 .PHONY: clean
 clean:
 	$(GUIX-DEV-CONTAINER) -- sh -c "git clean -xdf"
-
-PORT = /dev/ttyUSB0
-GUIX-DEV-CONTAINER-PORT = $(GUIX-DEV-SHELL) $(CONTAINER) --expose=$(PORT)
-GUIX-CONTAINER-PORT = $(GUIX-SHELL) $(CONTAINER) --expose=$(PORT)
-DOCKER-DEV-CONTAINER-PORT = $(DOCKER-DEV-IMAGE); docker run -it --device=$(PORT) <<python-package-name>>-dev
-DOCKER-CONTAINER-PORT = $(DOCKER-IMAGE); docker run -it --device=$(PORT) <<python-package-name>>
-
-.PHONY: guix-dev-container-port-serial
-guix-dev-container-port-serial:
-	$(GUIX-DEV-CONTAINER-PORT) picocom -- picocom -b 9600 -f n -y n -d 8 -p 1 -c $(PORT)
-
-.PHONY: guix-dev-container-port-serial-hs
-guix-dev-container-port-serial-hs:
-	$(GUIX-DEV-CONTAINER-PORT) picocom -- picocom -b 230400 -f n -y n -d 8 -p 1 -c $(PORT)
-
-.PHONY: guix-dev-container-port-ipython
-guix-dev-container-port-ipython:
-	$(GUIX-DEV-CONTAINER-PORT) -- ipython --no-autoindent
-
-.PHONY: guix-container-port
-guix-container-port:
-	$(GUIX-CONTAINER-PORT) python-ipython --rebuild-cache
-
-.PHONY: docker-dev-container-port-ipython
-docker-dev-container-port-ipython:
-	$(DOCKER-DEV-CONTAINER-PORT) ipython --no-autoindent
-
-.PHONY: docker-container-port
-docker-container-port:
-	$(DOCKER-CONTAINER-PORT)
 #+END_SRC
 
 #+BEGIN_SRC scheme :tangle emacs/init.el :exports none :noweb yes
@@ -877,7 +660,7 @@ from <<python-package-name>>.__about__ import (
     __url__,
     __version__)
 
-from .<<python-package-name>> import LoadstarSensorsInterface, DeviceInfo
+from .<<python-package-name>> import <<python-package-exports>>
 #+END_SRC
 
 #+NAME: license-text

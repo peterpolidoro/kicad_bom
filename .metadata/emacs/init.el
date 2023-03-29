@@ -34,4 +34,4 @@
 
 (setq enable-local-variables nil)
 (setq tangle-external-files t)
-(setq python-package-dir (concat "../" "loadstar_sensors_interface"))
+(setq python-package-dir (concat "../" "kicad_bom"))

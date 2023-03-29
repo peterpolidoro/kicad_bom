@@ -1,0 +1,5 @@
+# This file is generated automatically from metadata
+# File edits may be overwritten!
+[build-system]
+requires = ["setuptools"]
+build-backed = "setuptools.build_meta"

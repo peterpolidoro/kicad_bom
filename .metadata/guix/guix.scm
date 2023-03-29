@@ -13,7 +13,8 @@
  (gnu packages python-xyz)
  (gnu packages imagemagick)
  (gnu packages version-control)
- (gnu packages ncurses))
+ (gnu packages ncurses)
+ (guix-janelia packages python-janelia))
 
 (define %source-dir (dirname (dirname (dirname (current-filename)))))
 
@@ -33,11 +34,11 @@
                          python-wheel
                          python-twine
                          python-ipython
+                         python-setuptools
                          imagemagick))
     (propagated-inputs (list
                         ncurses
-                        python-pyserial-asyncio
-                        python-pint
+                        python-kicad-netlist-reader
                         python-click))
     (home-page "")
     (synopsis "")

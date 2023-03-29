@@ -1,0 +1,26 @@
+{
+    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "@type": "SoftwareSourceCode",
+    "license": "https://spdx.org/licenses/BSD-3-Clause",
+    "codeRepository": "https://github.com/janelia-pypi/kicad_bom",
+    "dateCreated": "2022-08-16",
+    "dateModified": "2023-03-29",
+    "name": "kicad_bom",
+    "version": "5.0.0",
+    "description": "KiCad Python code for generating bill of materials in multiple formats.",
+    "programmingLanguage": [
+        "Python 3"
+    ],
+    "author": [
+        {
+            "@type": "Person",
+            "givenName": "Peter",
+            "familyName": "Polidoro",
+            "email": "peter@polidoro.io",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Howard Hughes Medical Institute"
+            }
+        }
+    ]
+}
