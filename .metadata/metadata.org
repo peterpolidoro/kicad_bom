@@ -26,7 +26,7 @@ python-kicad-bom
 
 #+NAME: version
 #+BEGIN_SRC text :exports none :noweb yes
-5.0.0
+5.0.1
 #+END_SRC
 
 #+NAME: description
@@ -180,10 +180,12 @@ Python 3
 #+BEGIN_SRC python
 from kicad_bom import KicadBom
 netlist_path = '.'
-output_path = 'bom'
+output_path = 'test/bom'
 kb = KicadBom(netlist_path, output_path)
+
+kb.save_all_csv_files()
+
 column_names = ['Item',
-                'Reference(s)',
                 'Quantity',
                 'Manufacturer',
                 'Manufacturer Part Number',
@@ -192,7 +194,6 @@ column_names = ['Item',
                 'Package']
 format_for_org_table = True
 bom = kb.get_bom(column_names, format_for_org_table)
-return bom
 #+END_SRC
 
 * Installation

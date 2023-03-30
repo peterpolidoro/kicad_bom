@@ -1,13 +1,13 @@
-- [About](#org0ce10f9)
-- [Example Usage](#org69578f0)
-- [Installation](#orgd5e4e0c)
-- [Development](#orge342fa1)
+- [About](#orgb39bbb1)
+- [Example Usage](#orgf3dbf7d)
+- [Installation](#orgdd67935)
+- [Development](#orgfcd8cca)
 
     <!-- This file is generated automatically from metadata -->
     <!-- File edits may be overwritten! -->
 
 
-<a id="org0ce10f9"></a>
+<a id="orgb39bbb1"></a>
 
 # About
 
@@ -15,7 +15,7 @@
 - Python Package Name: kicad_bom
 - Description: KiCad Python code for generating bill of materials in multiple formats.
 - Python Package Exports: KicadBom, save_all_csv_files
-- Version: 5.0.0
+- Version: 5.0.1
 - Python Version: 3.9
 - Release Date: 2023-03-30
 - Creation Date: 2022-08-16
@@ -31,7 +31,7 @@
 ```
 
 
-<a id="org69578f0"></a>
+<a id="orgf3dbf7d"></a>
 
 # Example Usage
 
@@ -41,10 +41,12 @@
 ```python
 from kicad_bom import KicadBom
 netlist_path = '.'
-output_path = 'bom'
+output_path = 'test/bom'
 kb = KicadBom(netlist_path, output_path)
+
+kb.save_all_csv_files()
+
 column_names = ['Item',
-                'Reference(s)',
                 'Quantity',
                 'Manufacturer',
                 'Manufacturer Part Number',
@@ -53,11 +55,10 @@ column_names = ['Item',
                 'Package']
 format_for_org_table = True
 bom = kb.get_bom(column_names, format_for_org_table)
-return bom
 ```
 
 
-<a id="orgd5e4e0c"></a>
+<a id="orgdd67935"></a>
 
 # Installation
 
@@ -106,7 +107,7 @@ The Python code in this library may be installed in any number of ways, chose on
     ```
 
 
-<a id="orge342fa1"></a>
+<a id="orgfcd8cca"></a>
 
 # Development
 

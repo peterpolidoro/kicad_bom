@@ -6,7 +6,7 @@
     "dateCreated": "2022-08-16",
     "dateModified": "2023-03-30",
     "name": "kicad_bom",
-    "version": "5.0.0",
+    "version": "5.0.1",
     "description": "KiCad Python code for generating bill of materials in multiple formats.",
     "programmingLanguage": [
         "Python 3"

@@ -17,7 +17,6 @@ class KicadBom:
         self._no_part_number = 'NO_PART_NUMBER'
 
         netlist_path = self._find_netlist_path(netlist_path)
-        print(f'netlist_path = {netlist_path}')
         self._read_netlist(netlist_path)
 
         if output_path:
@@ -26,7 +25,7 @@ class KicadBom:
             self._output_path = netlist_path.parent
 
         if not self._output_path.exists():
-            Path.makedir(self._output_path)
+            Path.mkdir(self._output_path, parents=True)
 
     def _find_netlist_path(self, netlist_path):
         try:
@@ -60,7 +59,6 @@ class KicadBom:
         additional_columns = compfields | partfields     # union
 
         self._column_names = ['Item','Reference(s)','Quantity']
-        self._base_column_length = len(self._column_names)
         if 'Manufacturer' in additional_columns:
             self._column_names.append('Manufacturer')
         if 'Manufacturer Part Number' in additional_columns:
@@ -78,22 +76,25 @@ class KicadBom:
         # (see kicad_netlist_reader.py)
         self._grouped_components = self._netlist.groupComponents(components)
 
-    def _get_bom_row_from_part(self,item,part_number,part_info):
+    def _get_bom_row_from_part(self, item, part_number, part_info, column_names):
             ref_string = self._refs_to_string(part_info['refs'])
             quantity = part_info['quantity']
             group = part_info['group']
 
             row = []
-            if part_number is not self._no_part_number:
-                row.append(item)
-            else:
-                row.append('')
-            row.append(ref_string);
-            row.append(quantity)
-
-            for field in self._column_names[self._base_column_length:]:
-                value = self._netlist.getGroupField(group, field)
-                row.append(value)
+            for field in column_names:
+                if 'Item' == field:
+                    if part_number is not self._no_part_number:
+                        row.append(item)
+                    else:
+                        row.append('')
+                elif 'Reference' in field:
+                    row.append(ref_string)
+                elif 'Quantity' == field:
+                    row.append(quantity)
+                else:
+                    value = self._netlist.getGroupField(group, field)
+                    row.append(value)
             return row
 
     def _get_parts_by_manufacturer_part_number(self):
@@ -193,7 +194,7 @@ class KicadBom:
         for part_number, part_info in parts_by_manufacturer_part_number.items():
             if part_number is not self._no_part_number:
                 item += 1
-            row = self._get_bom_row_from_part(item,part_number,part_info)
+            row = self._get_bom_row_from_part(item, part_number, part_info, column_names)
             if part_number is not self._no_part_number:
                 bom.append(row)
             else:
@@ -219,7 +220,7 @@ class KicadBom:
         parts_by_vendor = self._get_parts_by_vendor()
         for vendor in parts_by_vendor:
             vendor_parts_filename = str(vendor) + '_parts.csv'
-            vendor_parts_output_path = os.path.join(self._output_dir,vendor_parts_filename)
+            vendor_parts_output_path = self._output_path / Path(vendor_parts_filename)
             with open(vendor_parts_output_path,'w') as f:
                 vendor_parts_writer = csv.writer(f,quotechar='\"',quoting=csv.QUOTE_MINIMAL)
                 parts = parts_by_vendor[vendor]
