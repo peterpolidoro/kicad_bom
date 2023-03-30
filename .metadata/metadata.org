@@ -50,11 +50,6 @@ python-kicad-netlist-reader
 python-click
 #+END_SRC
 
-#+NAME: command-line-interface
-#+BEGIN_SRC text :exports none :noweb yes
-bom
-#+END_SRC
-
 #+NAME: python-package-exports
 #+BEGIN_SRC text :exports none :noweb yes
 KicadBom, save_all_csv_files
@@ -183,18 +178,21 @@ Python 3
 ** Python
 
 #+BEGIN_SRC python
-#+END_SRC
-
-** Command Line
-
-*** help
-
-#+BEGIN_SRC sh :noweb yes
-#+END_SRC
-
-*** example usage
-
-#+BEGIN_SRC sh :noweb yes
+from kicad_bom import KicadBom
+netlist_path = '.'
+output_path = 'bom'
+kb = KicadBom(netlist_path, output_path)
+column_names = ['Item',
+                'Reference(s)',
+                'Quantity',
+                'Manufacturer',
+                'Manufacturer Part Number',
+                'Description',
+                'Reference(s)',
+                'Package']
+format_for_org_table = True
+bom = kb.get_bom(column_names, format_for_org_table)
+return bom
 #+END_SRC
 
 * Installation
@@ -332,7 +330,7 @@ exit
         (url "https://git.savannah.gnu.org/git/guix.git")
         (branch "master")
         (commit
-          "cd31437e9c00102f2dd5fab99286d4e77b6beb09")
+          "a6f98c64f65a2887a54236421d72eaa3aae95444")
         (introduction
           (make-channel-introduction
             "9edb3f66fd807b096b48283debdcddccfea34bad"
@@ -613,10 +611,6 @@ classifiers =
 packages = find:
 install_requires =
     <<python-dependencies>>
-
-[options.entry_points]
-console_scripts =
-    <<command-line-interface>> = <<python-package-name>>.cli:cli
 #+END_SRC
 
 #+HEADER: :tangle (if tangle-external-files "../setup.py" "no")

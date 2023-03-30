@@ -2,57 +2,52 @@
 # Python script to generate BOM in multiple formats from a KiCad generic netlist.
 #
 import kicad_netlist_reader
-import os
 from pathlib import Path
+from os import walk
 import csv
 
 
 class KicadBom:
     def __init__(self, netlist_path=None, output_path=None):
-        self._netlist_ext = '.xml'
+        self._netlist_suffix = '.xml'
         self._netlist_path = None
         self._netlist = None
         self._grouped_components = None
         self._column_names = None
         self._no_part_number = 'NO_PART_NUMBER'
 
-        self._update_netlist(netlist_path)
-        if self._netlist_path is None:
-            return
+        netlist_path = self._find_netlist_path(netlist_path)
+        print(f'netlist_path = {netlist_path}')
+        self._read_netlist(netlist_path)
 
-        self._output_dir = os.path.join(os.path.dirname(self._netlist_path),'bom')
-        if not os.path.exists(self._output_dir):
-            os.makedirs(self._output_dir)
-
-    def _update_netlist(self,netlist_path=None):
-        if (self._netlist_path is None) or (netlist_path is not None):
-            self._read_netlist(netlist_path)
-
-    def _find_netlist_path(self,netlist_path=None):
-        search_path = None
-        if (netlist_path is None) or (not os.path.exists(netlist_path)):
-            search_path = os.getcwd()
-        elif os.path.isdir(netlist_path):
-            search_path = netlist_path
+        if output_path:
+            self._output_path = Path(output_path)
         else:
-            (root,ext) = os.path.splitext(netlist_path)
-            if ext == self._netlist_ext:
-                return netlist_path
-            else:
-                return None
-        for root, dirs, files in os.walk(search_path):
-            for f in files:
-                if f.endswith(self._netlist_ext):
-                    return os.path.join(root,f)
-        return None
+            self._output_path = netlist_path.parent
 
-    def _read_netlist(self,netlist_path=None):
-        self._netlist_path = self._find_netlist_path(netlist_path)
-        if self._netlist_path is None:
-            raise RuntimeError('Cannot find netlist!')
+        if not self._output_path.exists():
+            Path.makedir(self._output_path)
 
+    def _find_netlist_path(self, netlist_path):
+        try:
+            netlist_path = Path(netlist_path)
+        except TypeError:
+            netlist_path = Path.cwd()
+
+        if netlist_path.suffix == self._netlist_suffix:
+            return netlist_path
+
+        if netlist_path.exists() and netlist_path.is_dir():
+            for root, dirs, files in walk(netlist_path):
+                for f in files:
+                    if f.endswith(self._netlist_suffix):
+                        return Path(root) / Path(f)
+
+        raise RuntimeError('Cannot find netlist!')
+
+    def _read_netlist(self, netlist_path):
         # Generate an instance of a generic netlist and load the netlist tree.
-        self._netlist = kicad_netlist_reader.netlist(self._netlist_path)
+        self._netlist = kicad_netlist_reader.netlist(netlist_path)
 
         # subset the components to those wanted in the BOM, controlled
         # by <configure> block in kicad_netlist_reader.py
@@ -178,10 +173,13 @@ class KicadBom:
             row.append(part_info['quantity'])
             return row
 
-    def get_bom(self):
+    def get_bom(self, column_names=None, format_for_org_table=False):
+        if column_names is None:
+            column_names = self._column_names
+
         # Create header row
         row = []
-        for c in self._column_names:
+        for c in column_names:
             row.append(c)
 
         # Create bom
@@ -203,12 +201,15 @@ class KicadBom:
         if row_of_parts_without_number:
             bom.append(row_of_parts_without_number)
 
+        if format_for_org_table:
+            bom.insert(1, None)
+
         return bom
 
     def save_bom_csv_file(self):
         bom = self.get_bom()
         bom_filename = 'bom.csv'
-        bom_output_path = os.path.join(self._output_dir,bom_filename)
+        bom_output_path = self._output_path / Path(bom_filename)
         with open(bom_output_path,'w') as f:
             bom_writer = csv.writer(f,quotechar='\"',quoting=csv.QUOTE_MINIMAL)
             for row in bom:

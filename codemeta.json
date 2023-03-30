@@ -4,7 +4,7 @@
     "license": "https://spdx.org/licenses/BSD-3-Clause",
     "codeRepository": "https://github.com/janelia-pypi/kicad_bom",
     "dateCreated": "2022-08-16",
-    "dateModified": "2023-03-29",
+    "dateModified": "2023-03-30",
     "name": "kicad_bom",
     "version": "5.0.0",
     "description": "KiCad Python code for generating bill of materials in multiple formats.",

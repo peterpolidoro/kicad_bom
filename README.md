@@ -1,13 +1,13 @@
-- [About](#orge095f82)
-- [Example Usage](#orgfd5dc88)
-- [Installation](#orgf45602e)
-- [Development](#org3b00750)
+- [About](#org419f884)
+- [Example Usage](#org53d962a)
+- [Installation](#org0083973)
+- [Development](#orge365ed6)
 
     <!-- This file is generated automatically from metadata -->
     <!-- File edits may be overwritten! -->
 
 
-<a id="orge095f82"></a>
+<a id="org419f884"></a>
 
 # About
 
@@ -17,7 +17,7 @@
 - Python Package Exports: KicadBom, save_all_csv_files
 - Version: 5.0.0
 - Python Version: 3.9
-- Release Date: 2023-03-29
+- Release Date: 2023-03-30
 - Creation Date: 2022-08-16
 - License: BSD-3-Clause
 - URL: https://github.com/janelia-pypi/kicad_bom
@@ -31,7 +31,7 @@
 ```
 
 
-<a id="orgfd5dc88"></a>
+<a id="org53d962a"></a>
 
 # Example Usage
 
@@ -39,28 +39,25 @@
 ## Python
 
 ```python
-
+from kicad_bom import KicadBom
+netlist_path = '.'
+output_path = 'bom'
+kb = KicadBom(netlist_path, output_path)
+column_names = ['Item',
+                'Reference(s)',
+                'Quantity',
+                'Manufacturer',
+                'Manufacturer Part Number',
+                'Description',
+                'Reference(s)',
+                'Package']
+format_for_org_table = True
+bom = kb.get_bom(column_names, format_for_org_table)
+return bom
 ```
 
 
-## Command Line
-
-
-### help
-
-```sh
-
-```
-
-
-### example usage
-
-```sh
-
-```
-
-
-<a id="orgf45602e"></a>
+<a id="org0083973"></a>
 
 # Installation
 
@@ -109,7 +106,7 @@ The Python code in this library may be installed in any number of ways, chose on
     ```
 
 
-<a id="org3b00750"></a>
+<a id="orge365ed6"></a>
 
 # Development
 
