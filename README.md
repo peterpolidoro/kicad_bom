@@ -1,13 +1,13 @@
-- [About](#org419f884)
-- [Example Usage](#org53d962a)
-- [Installation](#org0083973)
-- [Development](#orge365ed6)
+- [About](#org0ce10f9)
+- [Example Usage](#org69578f0)
+- [Installation](#orgd5e4e0c)
+- [Development](#orge342fa1)
 
     <!-- This file is generated automatically from metadata -->
     <!-- File edits may be overwritten! -->
 
 
-<a id="org419f884"></a>
+<a id="org0ce10f9"></a>
 
 # About
 
@@ -31,7 +31,7 @@
 ```
 
 
-<a id="org53d962a"></a>
+<a id="org69578f0"></a>
 
 # Example Usage
 
@@ -57,7 +57,7 @@ return bom
 ```
 
 
-<a id="org0083973"></a>
+<a id="orgd5e4e0c"></a>
 
 # Installation
 
@@ -106,7 +106,7 @@ The Python code in this library may be installed in any number of ways, chose on
     ```
 
 
-<a id="orge365ed6"></a>
+<a id="orge342fa1"></a>
 
 # Development
 
