@@ -14,6 +14,7 @@
  (gnu packages imagemagick)
  (gnu packages version-control)
  (gnu packages ncurses)
+ (gnu packages certs)
  (guix-janelia packages python-janelia))
 
 (define %source-dir (dirname (dirname (dirname (current-filename)))))
@@ -35,7 +36,8 @@
                          python-twine
                          python-ipython
                          python-setuptools
-                         imagemagick))
+                         imagemagick
+                         nss-certs))
     (propagated-inputs (list
                         ncurses
                         python-kicad-netlist-reader
