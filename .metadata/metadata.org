@@ -26,7 +26,7 @@ python-kicad-bom
 
 #+NAME: version
 #+BEGIN_SRC text :exports none :noweb yes
-5.0.1
+6.0.0
 #+END_SRC
 
 #+NAME: description
@@ -36,7 +36,7 @@ KiCad Python code for generating bill of materials in multiple formats.
 
 #+NAME: python-version
 #+BEGIN_SRC text :exports none :noweb yes
-3.9
+3.10
 #+END_SRC
 
 #+NAME: python-dependencies
@@ -177,23 +177,62 @@ Python 3
 
 ** Python
 
+*** Standard BOM
+
 #+BEGIN_SRC python
 from kicad_bom import KicadBom
-netlist_path = '.'
-output_path = 'test/bom'
-kb = KicadBom(netlist_path, output_path)
+kb = KicadBom(netlist_path='.')
 
-kb.save_all_csv_files()
+fields = ['Item',
+          'Quantity',
+          'Manufacturer',
+          'Manufacturer Part Number',
+          'Synopsis',
+          'Reference(s)',
+          'Package']
+kb.save_bom_csv_file('.', fields)
+#+END_SRC
 
-column_names = ['Item',
-                'Quantity',
-                'Manufacturer',
-                'Manufacturer Part Number',
-                'Description',
-                'Reference(s)',
-                'Package']
-format_for_org_table = True
-bom = kb.get_bom(column_names, format_for_org_table)
+*** Org Mode BOM Table
+
+#+BEGIN_SRC python
+from kicad_bom import KicadBom
+kb = KicadBom(netlist_path='.')
+
+fields = ['Item',
+          'Quantity',
+          'Manufacturer',
+          'Manufacturer Part Number',
+          'Synopsis',
+          'Reference(s)',
+          'Package']
+bom = kb.get_bom(input_fields=fields, output_fields=fields, format_for_org_table=True)
+#+END_SRC
+
+*** jlcpcb
+
+#+BEGIN_SRC python
+from kicad_bom import KicadBom
+kb = KicadBom(netlist_path='.')
+
+input_fields = ['Comment',
+                'Reference',
+                'Package',
+                'LCSC']
+output_fields = ['Comment',
+                 'Designator',
+                 'Footprint',
+                 'LCSC']
+kb.save_bom_csv_file('jlcpcb_bom.csv', input_fields, output_fields)
+#+END_SRC
+
+*** Vendor Parts Files
+
+#+BEGIN_SRC python
+from kicad_bom import KicadBom
+kb = KicadBom(netlist_path='.')
+
+kb.save_vendor_parts_csv_files('.')
 #+END_SRC
 
 * Installation
@@ -327,23 +366,23 @@ exit
 ;; This file is generated automatically from metadata
 ;; File edits may be overwritten!
 (list (channel
-        (name 'guix)
-        (url "https://git.savannah.gnu.org/git/guix.git")
-        (branch "master")
-        (commit
-          "a6f98c64f65a2887a54236421d72eaa3aae95444")
-        (introduction
-          (make-channel-introduction
-            "9edb3f66fd807b096b48283debdcddccfea34bad"
-            (openpgp-fingerprint
-              "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
-      (channel
         (name 'guix-janelia)
         (url "https://github.com/guix-janelia/guix-janelia.git")
         (branch "main")
         (commit
-          "a8a165560ee168fb21eb9af61f7b3e1735102401")))
-#+END_SRC
+          "08fe0b2ecb68d9e17dfa4802c79935ea6339d6d1"))
+      (channel
+        (name 'guix)
+        (url "https://git.savannah.gnu.org/git/guix.git")
+        (branch "master")
+        (commit
+          "014875b29e68da6357a5323e6dd1eaa74a05b753")
+        (introduction
+          (make-channel-introduction
+            "9edb3f66fd807b096b48283debdcddccfea34bad"
+            (openpgp-fingerprint
+              "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA")))))
+ #+END_SRC
 
 #+BEGIN_SRC scheme :tangle guix/guix.scm :exports none :noweb yes
 ;; This file is generated automatically from metadata

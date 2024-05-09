@@ -1,13 +1,13 @@
-- [About](#orgca9ef06)
-- [Example Usage](#orge3f3be4)
-- [Installation](#org38abb27)
-- [Development](#orgc9e84df)
+- [About](#org692dbb0)
+- [Example Usage](#org21b4977)
+- [Installation](#org71b6523)
+- [Development](#org44067cc)
 
     <!-- This file is generated automatically from metadata -->
     <!-- File edits may be overwritten! -->
 
 
-<a id="orgca9ef06"></a>
+<a id="org692dbb0"></a>
 
 # About
 
@@ -15,15 +15,15 @@
 - Python Package Name: kicad_bom
 - Description: KiCad Python code for generating bill of materials in multiple formats.
 - Python Package Exports: KicadBom, save_all_csv_files
-- Version: 5.0.1
-- Python Version: 3.9
-- Release Date: 2023-03-30
+- Version: 6.0.0
+- Python Version: 3.10
+- Release Date: 2024-05-09
 - Creation Date: 2022-08-16
 - License: BSD-3-Clause
 - URL: https://github.com/janelia-pypi/kicad_bom
 - Author: Peter Polidoro
 - Email: peter@polidoro.io
-- Copyright: 2023 Howard Hughes Medical Institute
+- Copyright: 2024 Howard Hughes Medical Institute
 - References:
   - https://gitlab.com/kicad/code/kicad
 - Dependencies:
@@ -31,34 +31,77 @@
 ```
 
 
-<a id="orge3f3be4"></a>
+<a id="org21b4977"></a>
 
 # Example Usage
 
 
 ## Python
 
+
+### Standard BOM
+
 ```python
 from kicad_bom import KicadBom
-netlist_path = '.'
-output_path = 'test/bom'
-kb = KicadBom(netlist_path, output_path)
+kb = KicadBom(netlist_path='.')
 
-kb.save_all_csv_files()
-
-column_names = ['Item',
-                'Quantity',
-                'Manufacturer',
-                'Manufacturer Part Number',
-                'Description',
-                'Reference(s)',
-                'Package']
-format_for_org_table = True
-bom = kb.get_bom(column_names, format_for_org_table)
+fields = ['Item',
+          'Quantity',
+          'Manufacturer',
+          'Manufacturer Part Number',
+          'Synopsis',
+          'Reference(s)',
+          'Package']
+kb.save_bom_csv_file('.', fields)
 ```
 
 
-<a id="org38abb27"></a>
+### Org Mode BOM Table
+
+```python
+from kicad_bom import KicadBom
+kb = KicadBom(netlist_path='.')
+
+fields = ['Item',
+          'Quantity',
+          'Manufacturer',
+          'Manufacturer Part Number',
+          'Synopsis',
+          'Reference(s)',
+          'Package']
+bom = kb.get_bom(input_fields=fields, output_fields=fields, format_for_org_table=True)
+```
+
+
+### jlcpcb
+
+```python
+from kicad_bom import KicadBom
+kb = KicadBom(netlist_path='.')
+
+input_fields = ['Comment',
+                'Reference',
+                'Package',
+                'LCSC']
+output_fields = ['Comment',
+                 'Designator',
+                 'Footprint',
+                 'LCSC']
+kb.save_bom_csv_file('jlcpcb_bom.csv', input_fields, output_fields)
+```
+
+
+### Vendor Parts Files
+
+```python
+from kicad_bom import KicadBom
+kb = KicadBom(netlist_path='.')
+
+kb.save_vendor_parts_csv_files('.')
+```
+
+
+<a id="org71b6523"></a>
 
 # Installation
 
@@ -107,7 +150,7 @@ The Python code in this library may be installed in any number of ways, chose on
     ```
 
 
-<a id="orgc9e84df"></a>
+<a id="org44067cc"></a>
 
 # Development
 

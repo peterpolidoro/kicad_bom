@@ -1,5 +1,5 @@
 # first stage
-FROM python:3.9-slim AS builder
+FROM python:3.10-slim AS builder
 COPY requirements.txt .
 
 # install dependencies to the local user directory (eg. /root/.local)
@@ -7,7 +7,7 @@ RUN pip install --user -r requirements.txt
 RUN pip install --user ipython
 
 # second unnamed stage
-FROM python:3.9-slim
+FROM python:3.10-slim
 WORKDIR /kicad_bom
 
 # copy only the dependencies installation from the 1st stage image
