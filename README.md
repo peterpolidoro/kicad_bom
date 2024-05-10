@@ -1,13 +1,13 @@
-- [About](#org082588f)
-- [Example Usage](#org4943cc5)
-- [Installation](#org2710717)
-- [Development](#org2062a56)
+- [About](#org06efcf6)
+- [Example Usage](#orga21145f)
+- [Installation](#orgb7c5127)
+- [Development](#org18614e9)
 
     <!-- This file is generated automatically from metadata -->
     <!-- File edits may be overwritten! -->
 
 
-<a id="org082588f"></a>
+<a id="org06efcf6"></a>
 
 # About
 
@@ -17,7 +17,7 @@
 - Python Package Exports: KicadBom, save_all_csv_files
 - Version: 6.0.0
 - Python Version: 3.10
-- Release Date: 2024-05-09
+- Release Date: 2024-05-10
 - Creation Date: 2022-08-16
 - License: BSD-3-Clause
 - URL: https://github.com/janelia-pypi/kicad_bom
@@ -31,7 +31,7 @@
 ```
 
 
-<a id="org4943cc5"></a>
+<a id="orga21145f"></a>
 
 # Example Usage
 
@@ -79,7 +79,7 @@ bom = kb.get_bom(input_fields=fields, output_fields=fields, format_for_org_table
 from kicad_bom import KicadBom
 kb = KicadBom(netlist_path='.')
 
-input_fields = ['Comment',
+input_fields = ['Synopsis',
                 'Reference',
                 'Package',
                 'LCSC']
@@ -87,7 +87,7 @@ output_fields = ['Comment',
                  'Designator',
                  'Footprint',
                  'LCSC']
-kb.save_bom_csv_file('jlcpcb_bom.csv', input_fields, output_fields)
+kb.save_bom_csv_file('jlcpcb-bom.csv', input_fields, output_fields)
 ```
 
 
@@ -101,7 +101,7 @@ kb.save_vendor_parts_csv_files('.')
 ```
 
 
-<a id="org2710717"></a>
+<a id="orgb7c5127"></a>
 
 # Installation
 
@@ -150,7 +150,7 @@ The Python code in this library may be installed in any number of ways, chose on
     ```
 
 
-<a id="org2062a56"></a>
+<a id="org18614e9"></a>
 
 # Development
 

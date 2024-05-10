@@ -215,7 +215,7 @@ bom = kb.get_bom(input_fields=fields, output_fields=fields, format_for_org_table
 from kicad_bom import KicadBom
 kb = KicadBom(netlist_path='.')
 
-input_fields = ['Comment',
+input_fields = ['Synopsis',
                 'Reference',
                 'Package',
                 'LCSC']
@@ -223,7 +223,7 @@ output_fields = ['Comment',
                  'Designator',
                  'Footprint',
                  'LCSC']
-kb.save_bom_csv_file('jlcpcb_bom.csv', input_fields, output_fields)
+kb.save_bom_csv_file('jlcpcb-bom.csv', input_fields, output_fields)
 #+END_SRC
 
 *** Vendor Parts Files
