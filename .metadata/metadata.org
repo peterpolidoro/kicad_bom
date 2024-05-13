@@ -547,6 +547,12 @@ clean:
 	$(GUIX-DEV-CONTAINER) -- sh -c "git clean -xdf"
 #+END_SRC
 
+#+BEGIN_SRC text :tangle ../Makefile :exports none :noweb yes
+# This file is generated automatically from .metadata.org
+# File edits may be overwritten!
+include .metadata/Makefile
+#+END_SRC
+
 #+BEGIN_SRC scheme :tangle emacs/init.el :exports none :noweb yes
 ;; This file is generated automatically from metadata
 ;; File edits may be overwritten!
