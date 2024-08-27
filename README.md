@@ -20,7 +20,7 @@
 - Release Date: 2024-05-10
 - Creation Date: 2022-08-16
 - License: BSD-3-Clause
-- URL: https://github.com/janelia-pypi/kicad_bom
+- URL: https://github.com/janelia-python/kicad_bom
 - Author: Peter Polidoro
 - Email: peter@polidoro.io
 - Copyright: 2024 Howard Hughes Medical Institute
@@ -105,7 +105,7 @@ kb.save_vendor_parts_csv_files('.')
 
 # Installation
 
-<https://github.com/janelia-pypi/python_setup>
+<https://github.com/janelia-python/python_setup>
 
 
 ## GNU/Linux
@@ -158,7 +158,7 @@ The Python code in this library may be installed in any number of ways, chose on
 ## Clone Repository
 
 ```sh
-git clone git@github.com:janelia-pypi/kicad_bom.git
+git clone git@github.com:janelia-python/kicad_bom.git
 cd kicad_bom
 ```
 
